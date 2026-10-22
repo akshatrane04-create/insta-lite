@@ -34,6 +34,7 @@ const server = app.listen(port, () => {
   console.log("Server started on port 3000");
 });
 
+// Keep the imported client available for the app lifetime and close it cleanly.
 async function shutdown() {
   server.close(async () => {
     await prisma.$disconnect();

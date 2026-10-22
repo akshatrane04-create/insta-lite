@@ -1,7 +1,6 @@
 import prisma from "../db.js";
 
 export function createUser(data) {
-  // Whitelist fields so clients cannot set id/timestamps/isPrivate.
   const createData = {
     username: data.username,
     email: data.email,
@@ -11,8 +10,40 @@ export function createUser(data) {
   return prisma.user.create({ data: createData });
 }
 
-export function listUsers() {
-  return prisma.user.findMany({ orderBy: { id: "asc" } });
+export function listUsers({ search, isPrivate, sortBy, order, page, limit }) {
+  const where = {};
+  if (search) {
+    where.OR = [
+      { username: { contains: search } },
+      { fullname: { contains: search } },
+      { email: { contains: search } }
+    ];
+  }
+  if (isPrivate !== undefined) where.isPrivate = isPrivate;
+
+  const allowedSortFields = ["id", "username", "fullname", "createdAt", "updatedAt"];
+  const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "id";
+  const safeOrder = order === "desc" ? "desc" : "asc";
+
+  return prisma.user.findMany({
+    where,
+    orderBy: { [safeSortBy]: safeOrder },
+    skip: (page - 1) * limit,
+    take: limit
+  });
+}
+
+export function countUsers({ search, isPrivate }) {
+  const where = {};
+  if (search) {
+    where.OR = [
+      { username: { contains: search } },
+      { fullname: { contains: search } },
+      { email: { contains: search } }
+    ];
+  }
+  if (isPrivate !== undefined) where.isPrivate = isPrivate;
+  return prisma.user.count({ where });
 }
 
 export function getUserById(id) {

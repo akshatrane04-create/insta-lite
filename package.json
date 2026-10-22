@@ -2,13 +2,14 @@
   "name": "instalite-lab13-mvc",
   "version": "1.0.0",
   "private": true,
-  "description": "InstaLite Lab 13 - Express, Prisma 7, MVC CRUD routes",
+  "description": "InstaLite Lab 13 - Express, Prisma 7, MVC CRUD, seeding, filtering, sorting and pagination",
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
     "prisma:generate": "prisma generate --config prisma7.config.js",
-    "prisma:migrate": "prisma migrate dev --config prisma7.config.js"
+    "prisma:migrate": "prisma migrate dev --config prisma7.config.js",
+    "prisma:seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.10.0",
